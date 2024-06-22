@@ -1,7 +1,10 @@
 const Task = require('../models/Task')
 
-const getAllTasks = (req, res) => {
-  res.send('get all tasks')
+const getAllTasks = async (req, res) => {
+  const tasks = await Task.find({})
+    .catch((err) => res.status(400).send(err))
+
+  res.send(tasks)
 }
 
 const createTask = async (req, res) => {
@@ -12,7 +15,7 @@ const createTask = async (req, res) => {
 const getTask = async (req, res) => {
   const task = await Task.findById(req.params.id)
     .then(() => {
-      res.send(task)
+      res.status(200).send(task)
     }).catch((err) => {
       res.status(404).send('Error: Invalid id.\nNo task matching that id was found')
     })
