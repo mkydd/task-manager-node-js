@@ -14,17 +14,20 @@ const createTask = async (req, res) => {
 
 const getTask = async (req, res) => {
   const task = await Task.findById(req.params.id)
-    .catch(() => res.status(404).send('Error: Invalid id.\nNo task matching that id was found'))
+    .catch(() => res.status(400).send('Error: Invalid id.\nNo task matching that id was found'))
 
   res.status(200).send(task)
 }
 
-const updateTask = (req, res) => {
-  res.send('update task')
+const updateTask = async (req, res) => {
+  
 }
 
-const deleteTask = (req, res) => {
-  res.send('delete task')
+const deleteTask = async (req, res) => {
+  await Task.deleteOne({ _id: req.params.id })
+    .catch((err) => res.status(400).send(err))
+
+  res.status(200).json({ id: req.params.id })
 }
 
 module.exports = {
