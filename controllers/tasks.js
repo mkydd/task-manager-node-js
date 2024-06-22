@@ -14,11 +14,9 @@ const createTask = async (req, res) => {
 
 const getTask = async (req, res) => {
   const task = await Task.findById(req.params.id)
-    .then(() => {
-      res.status(200).send(task)
-    }).catch((err) => {
-      res.status(404).send('Error: Invalid id.\nNo task matching that id was found')
-    })
+    .catch(() => res.status(404).send('Error: Invalid id.\nNo task matching that id was found'))
+
+  res.status(200).send(task)
 }
 
 const updateTask = (req, res) => {
