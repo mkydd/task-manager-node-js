@@ -1,15 +1,21 @@
-
+const Task = require('../models/Task')
 
 const getAllTasks = (req, res) => {
   res.send('get all tasks')
 }
 
-const createTask = (req, res) => {
-  res.json(req.body)
+const createTask = async (req, res) => {
+  const task = await Task.create(req.body)
+  res.status(201).json({ task })
 }
 
-const getTask = (req, res) => {
-  res.json({ id: req.params.id})
+const getTask = async (req, res) => {
+  const task = await Task.findById(req.params.id)
+    .then(() => {
+      res.send(task)
+    }).catch((err) => {
+      res.status(404).send('Error: Invalid id.\nNo task matching that id was found')
+    })
 }
 
 const updateTask = (req, res) => {
