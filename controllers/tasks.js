@@ -20,7 +20,13 @@ const getTask = async (req, res) => {
 }
 
 const updateTask = async (req, res) => {
-  
+  const task = await Task.findById(req.params.id)
+  await Task.findByIdAndUpdate(req.params.id, {completed: !task.completed}).lean()
+    .then(() => {
+      res.status(200).send({...task._doc, completed: !task.completed})
+    }).catch((err) => {
+      res.status(400).send(err)
+    })
 }
 
 const deleteTask = async (req, res) => {
