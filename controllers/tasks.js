@@ -3,7 +3,7 @@ const Task = require('../models/Task')
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find({})
-    res.status(200).json({ tasks })
+    res.status(200).json({ tasks }) // { task } === { task: task }
     
   } catch (error) {
     res.status(500).json({ msg: error })
@@ -20,10 +20,15 @@ const createTask = async (req, res) => {
 }
 
 const getTask = async (req, res) => {
-  const task = await Task.findById(req.params.id)
-    .catch(() => res.status(400).send('Error: Invalid id.\nNo task matching that id was found'))
-
-  res.status(200).send(task)
+  try {
+    const task = await Task.findById(req.params.id)
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id : ${req.params.id}`})
+    }
+    res.status(200).json({ task })
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
 }
 
 const updateTask = async (req, res) => {
@@ -37,10 +42,15 @@ const updateTask = async (req, res) => {
 }
 
 const deleteTask = async (req, res) => {
-  await Task.deleteOne({ _id: req.params.id })
-    .catch((err) => res.status(400).send(err))
-
-  res.status(200).json({ id: req.params.id })
+  try {
+  const task = await Task.findOneAndDelete({ _id: req.params.id })
+  if (!task) {
+    return res.status(404).json({ msg: `No task with id : ${req.params.id}`})
+  }
+  res.status(200).json({ task })
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
 }
 
 module.exports = {
